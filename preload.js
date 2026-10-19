@@ -1,15 +1,25 @@
-/**
- * The preload script runs before. It has access to web APIs
- * as well as Electron's renderer process modules
- */
-const { contextBridge, ipcRenderer } = require('electron')
+const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('exposed', {
+  login: (credentials) => ipcRenderer.invoke('auth:login', credentials),
+  reconnect: () => ipcRenderer.invoke('auth:reconnect'),
+  sendMessage: (message) => ipcRenderer.invoke('chat:send', message),
 
-  // expose a function in main (node) to renderer
-  getStuffFromMain: () => ipcRenderer.invoke('get-stuff-from-main'),
+  onStatus: (callback) => {
+    const listener = (_event, status) => callback(status);
+    ipcRenderer.on('chat:status', listener);
+    return () => ipcRenderer.removeListener('chat:status', listener);
+  },
 
-  // send data back to main
-  sendStuffToMain: (data) => ipcRenderer.invoke('send-stuff-to-main', data)
+  onError: (callback) => {
+    const listener = (_event, message) => callback(message);
+    ipcRenderer.on('auth:error', listener);
+    return () => ipcRenderer.removeListener('auth:error', listener);
+  },
 
-})
+  onMessage: (callback) => {
+    const listener = (_event, message) => callback(message);
+    ipcRenderer.on('chat:message', listener);
+    return () => ipcRenderer.removeListener('chat:message', listener);
+  }
+});

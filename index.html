@@ -1,14 +1,41 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
-    <title>Electron</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
 
-    <!-- You can also require other files to run in this process -->
-    <script src="./renderer.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+  <title>Electron</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="connection-bar">
+    <span id="connection-status" role="status">Not connected</span>
+    <button id="reconnect" type="button" hidden>Reconnect</button>
+  </header>
+
+  <main>
+    <form id="login-form" class="login-panel">
+      <h1>Sign in to chat</h1>
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button type="submit">Log in</button>
+      <p id="login-error" role="alert"></p>
+    </form>
+
+    <section id="chat-panel" class="chat-panel" aria-labelledby="chat-title" hidden>
+      <h1 id="chat-title">Chat</h1>
+      <ul id="messages" aria-live="polite" hidden></ul>
+      <form id="form" action="" hidden>
+        <input id="input" autocomplete="off" aria-label="Message">
+        <button type="submit">Send</button>
+      </form>
+    </section>
+  </main>
+  <script src="./renderer.js"></script>
+</body>
+
 </html>
